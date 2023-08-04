@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[legalpaper, portrait, margin=1in]{geometry}
+\usepackage{tikz}
+
+\begin{document}
+
+\scalebox{0.6}{
+\begin{tikzpicture}[font=\Huge]
+\coordinate  (root) at (11,16);
+\coordinate [label=right:$\rho$] (rootlabel) at (12,16);
+\coordinate (tipa) at (1,1);
+\coordinate [label=below:$A$] (alabel) at (1,0);
+\coordinate (tipb) at (9,1);
+\coordinate [label=below:$B$] (blabel) at (9,0);
+\coordinate (tipc) at (17,1);
+\coordinate [label=below:$C$] (clabel) at (17,0);
+\coordinate (tipd) at (21,1);
+\coordinate [label=below:$D$] (dlabel) at (21,0);
+\coordinate (sisters) at (5,7);
+\coordinate [label=right:$S$] (slabel) at (6,7);
+\coordinate (ingroup) at (9,13);
+\coordinate [label=right:$I$] (ilabel) at (10,13);
+\coordinate (hybsis) at (7,4);
+\coordinate [label=right:$H_B$] (hblabel) at (7,5);
+\coordinate (hybouter) at (15,4);
+\coordinate [label=right:$H_C$] (hclabel) at (16,4);
+\fill (root) circle (2ex);
+\fill (tipa) circle (2ex);
+\fill (tipb) circle (2ex);
+\fill (tipc) circle (2ex);
+\fill (tipd) circle (2ex);
+\draw[ultra thick] [-] (root) -- (tipa) ;
+\draw[ultra thick] [-] (root) -- (tipd);
+\fill (sisters) circle (2ex);
+\fill (ingroup) circle (2ex);
+\draw[ultra thick] [-] (sisters) -- (tipb);
+\draw[ultra thick] [-] (ingroup) -- (tipc);
+\fill (hybsis) circle (2ex);
+\fill (hybouter) circle (2ex);
+\draw[ultra thick] [-] (hybsis) -- (hybouter);
+\draw[dotted] [-] (0,4) -- (7,4);
+\node[] at (-2,4) {$\tau_H$};
+\draw[dotted] [-] (0,7) -- (5,7);
+\node[] at (-2,7) {$\tau_S$};
+\draw[dotted] [-] (0,13) -- (9,13);
+\node[] at (-2,13) {$\tau_I$};
+\draw[dotted] [-] (0,16) -- (11,16);
+\node[] at (-2,16) {$\tau_\rho$};
+\end{tikzpicture}
+}
+
+\end{document}
+
+
