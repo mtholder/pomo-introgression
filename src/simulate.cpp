@@ -23,6 +23,7 @@ variables_map parse_cmd_line(int argc, char* argv[]) {
         ("sample-counts", 
             value<int_vec_t>()->multitoken(), 
             "4 integers for the number of counts to be simulated for A, B, C, and D" )
+        ("num-sites", value<int>(), "The number of PoMo sites to simulate" )
         ;
     options_description model("Model options");
     visible.add(data).add(model).add(standard_options());
@@ -42,6 +43,7 @@ variables_map parse_cmd_line(int argc, char* argv[]) {
 class SimOptions {
 public:
     int_vec_t sample_counts;
+    int num_sites;
 };
 
 inline SimOptions parse_and_validate_cmd_line(int argc, char * argv[]) {
@@ -60,6 +62,15 @@ inline SimOptions parse_and_validate_cmd_line(int argc, char * argv[]) {
             throw OTCError() << "sample-counts should be followed by non-negative integers '" << c << "' found.";
         }
     }
+    try {
+        so.num_sites = args["num-sites"].as<int>();
+    } catch (...) {
+        so.num_sites = 100;
+    }
+    if (so.num_sites < 1) {
+        throw  OTCError() << "num-sites must be a positive integer.";
+    }
+    
     return so;
 }
 
@@ -71,7 +82,7 @@ int main(int argc, char *argv[]) {
         std::cerr << "simulate-pomo-introgression: Error! " << e.what() << std::endl;
         exit(1);
     }
-    std::cerr << "To simulate:\n";
+    std::cerr << "To simulate " << options.num_sites << " sites with:\n";
     std::cerr << "  " << options.sample_counts.at(0) << " seqs from A\n";
     std::cerr << "  " << options.sample_counts.at(1) << " seqs from B\n";
     std::cerr << "  " << options.sample_counts.at(2) << " seqs from C\n";
