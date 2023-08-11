@@ -35,6 +35,15 @@ variables_map parse_cmd_line(int argc, char* argv[]) {
         ("r-mat",
             value<double_vec_t>()->multitoken(),
             "6 floating point numbers for the exchangeabilities: r_AC, r_AG, r_AT, r_CG, r_CT, and r_GT." )
+        ("node-depths",
+            value<double_vec_t>()->multitoken(),
+            "4 floating point numbers in increasing order: tau_H, tau_S, tau_I, and tau_root." )
+        ("introgress-prob",
+            value<double>(),
+            "phi, the probability that a site is affected by introgression" )
+        ("mixing-wts",
+            value<double_vec_t>()->multitoken(),
+            "2 floating probabilities: gamma_B and gamma_C that determine the fraction of weighting for migration into B and into C given that a site is involved in introgression." )
         ("pop-size,N",
             value<int>()->multitoken(),
             "N, the population size of the PoMo state space" )
@@ -145,5 +154,58 @@ void parse_and_validate_cmd_line(int argc,
     }
     if (so.pomo_pop_size < 2) {
         throw  OTCError() << "num-sites must be greater than 1.";
+    }
+    // node-depths
+    double_vec_t node_depths;
+    try {
+        node_depths = args["node-depths"].as<double_vec_t>();
+    } catch (...) {
+        node_depths = double_vec_t{1.0, 2.0, 3.0, 4.0};
+    }
+    if (node_depths.size() != 4) {
+        throw  OTCError() << "node-depths should be followed by 4 floating point numbers.";
+    }
+    so.tau_hyb = node_depths.at(0);
+    if (so.tau_hyb < 0.0) {
+        throw  OTCError() << "tau_H must be greater than 0.0";
+    }
+    so.tau_sis = node_depths.at(1);
+    if (so.tau_sis <= so.tau_hyb) {
+        throw  OTCError() << "tau_S must be greater than tau_H";
+    }
+    so.tau_ingroup = node_depths.at(2);
+    if (so.tau_ingroup <= so.tau_sis) {
+        throw  OTCError() << "tau_I must be greater than tau_S";
+    }
+    so.tau_root = node_depths.at(3);
+    if (so.tau_root <= so.tau_ingroup) {
+        throw  OTCError() << "tau_root must be greater than tau_I";
+    }
+    // phi:  prob. being effected by introgression
+    try {
+        so.prob_introgressed = args["introgress-prob"].as<double>();
+    } catch (...) {
+        so.prob_introgressed = 1.0;
+    }
+    if (so.prob_introgressed < 0.0 || so.prob_introgressed > 1.0) {
+        throw  OTCError() << "introgress-prob must be in the range [0,1]";
+    }
+    // gammas
+    double_vec_t gammas;
+    try {
+        gammas = args["mixing-wts"].as<double_vec_t>();
+    } catch (...) {
+        gammas = double_vec_t{0.5, 0.5};
+    }
+    if (gammas.size() != 2) {
+        throw  OTCError() << "mixing-wts should be followed by 2 probabilites.";
+    }
+    so.gamma_B = gammas.at(0);
+    if (so.gamma_B < 0.0 || so.gamma_B > 1.0) {
+        throw  OTCError() << "mixing-wts must be in the range [0,1]";
+    }
+    so.gamma_C = gammas.at(1);
+    if (so.gamma_C < 0.0 || so.gamma_C > 1.0) {
+        throw  OTCError() << "mixing-wts must be in the range [0,1]";
     }
 }

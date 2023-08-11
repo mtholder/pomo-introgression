@@ -13,6 +13,14 @@ public:
     std::vector<double> base_freqs;
     std::vector<double> r_mat;
     int pomo_pop_size;
+    double tau_hyb;
+    double tau_sis;
+    double tau_ingroup;
+    double tau_root;
+    double prob_introgressed;
+    double gamma_B;
+    double gamma_C;
+
 };
 
 
@@ -38,7 +46,16 @@ inline std::ostream & operator<<(std::ostream & out,
     for (auto rp : options.r_mat) {
         out << rp << ", ";
     }
-    out << ")\n";  
+    out << ")\n";
+    out << "The probability that a site will be affected by introgression = " << options.prob_introgressed << '\n';
+    out << "Among introgressed sites:\n";
+    out << "  lineage B is mixed with in-migration of weight " << options.gamma_B << " from lineage C.\n";
+    out << "  lineage C is mixed with in-migration of weight " << options.gamma_C << " from lineage B.\n";
+    out << "Node depths are:\n";
+    out << "  hybridization @ " << options.tau_hyb << '\n';
+    out << "  sister group  @ " << options.tau_sis << '\n';
+    out << "  ingroup node  @ " << options.tau_ingroup << '\n';
+    out << "  root node     @ " << options.tau_root << '\n';
     return out;
 }
 
